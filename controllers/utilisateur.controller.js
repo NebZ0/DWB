@@ -9,6 +9,10 @@ exports.getById = async (req, res) => {
     res.json(req.utilisateur)
 }
 
+exports.getLogementDeId = async (req, res) => {
+    res.json(req.utilisateur.logements); 
+}
+
 exports.create = async (req, res) => {
     const { nom, email, role, DateNaissance } = req.body
 
