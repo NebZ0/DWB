@@ -4,6 +4,8 @@
 
 Pour pouvoir utiliser, tout d'abord 
 
+- clone le repo
+
 -npm install
 
 -créer un fichier .env avec 
@@ -23,20 +25,35 @@ http://localhost:3000/api-docs
 ## Routes disponibles
 ### Utilisateurs
 GET /utilisateurs → Liste de tous les utilisateurs
+
 GET /utilisateurs/:id → Récupérer un utilisateur par ID
+
 GET /utilisateurs/proprio/:id → Récupérer tous les logements d’un utilisateur (propriétaire)
+
 POST /utilisateurs → Créer un nouvel utilisateur
+
 PUT /utilisateurs/:id → Modifier un utilisateur
+
 DELETE /utilisateurs/:id → Supprimer un utilisateur
+
 ### Logements
 GET /logements → Liste de tous les logements
+
 GET /logements/:id → Récupérer un logement par ID
+
 POST /logements → Créer un logement
+
 PUT /logements/:id → Modifier un logement
+
 DELETE /logements/:id → Supprimer un logement
+
 ### Réservations
 GET /reservations → Liste de toutes les réservations
+
 GET /reservations/:id → Récupérer une réservation par ID
+
 POST /reservations → Créer une réservation
+
 PUT /reservations/:id → Modifier une réservation
+
 DELETE /reservations/:id → Supprimer une réservation

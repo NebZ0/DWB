@@ -10,7 +10,18 @@ exports.getById = async (req, res) => {
 }
 
 exports.getLogementDeId = async (req, res) => {
-    res.json(req.utilisateur.logements); 
+    const id = req.params.id;
+
+    const logements = await prisma.logement.findMany({
+        where: { id_proprio : id },
+        select:{
+            titre: true,
+            ville: true,
+            prix: true
+        }
+    });
+
+    res.json(logements);
 }
 
 exports.create = async (req, res) => {
