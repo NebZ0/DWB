@@ -1,0 +1,38 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+datasource db {
+  provider = "mongodb"
+  url=env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+model Logement {
+  id String  @id@default(auto()) @map("_id") @db.ObjectId
+  titre String
+  ville String
+  prix Int
+  id_proprio String @db.ObjectId
+}
+
+model Utilisateur {
+  id String  @id@default(auto()) @map("_id") @db.ObjectId
+  nom String
+  email String
+  role String
+  DateNaissance DateTime
+}
+
+model Reservation {
+  id String  @id@default(auto()) @map("_id") @db.ObjectId
+  DateArrive DateTime
+  DateDepart DateTime
+  id_client String @db.ObjectId
+  id_proprio String @db.ObjectId
+}
