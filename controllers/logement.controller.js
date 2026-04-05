@@ -38,3 +38,26 @@ exports.dele = async (req, res) => {
   await prisma.logement.delete({ where: { id } })
   res.status(204).send()
 }
+
+exports.search = async (req, res) => {
+    const { ville, minPrix, maxPrix, titre, sortBy, order } = req.query;
+
+    const where = {};
+    if (ville) where.ville = { contains: ville, mode: 'insensitive' };
+    if (titre) where.titre = { contains: titre, mode: 'insensitive' };
+    if (minPrix || maxPrix) where.prix = {};
+    if (minPrix) where.prix.gte = parseInt(minPrix);
+    if (maxPrix) where.prix.lte = parseInt(maxPrix);
+
+    let orderBy = {};
+    if (sortBy) {
+        orderBy[sortBy] = order === 'desc' ? 'desc' : 'asc';
+    }
+
+    const logements = await prisma.logement.findMany({
+        where,
+        orderBy: Object.keys(orderBy).length ? orderBy : undefined
+    });
+
+    res.json(logements);
+};

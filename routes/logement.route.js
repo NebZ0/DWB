@@ -192,4 +192,49 @@ router.post("/", validate(logementValidationRules) ,logementCtrl.create);
 router.put("/:id", logementIdPresent, validate(logementValidationRules) ,logementCtrl.modify);
 router.delete("/:id",logementIdPresent ,logementCtrl.dele);
 
+/**
+ * @swagger
+ * /logements/search:
+ *   get:
+ *     summary: Rechercher, filtrer et trier les logements
+ *     tags: [Logements]
+ *     parameters:
+ *       - in: query
+ *         name: ville
+ *         schema:
+ *           type: string
+ *         description: Filtrer par ville
+ *       - in: query
+ *         name: minPrix
+ *         schema:
+ *           type: integer
+ *         description: Prix minimum
+ *       - in: query
+ *         name: maxPrix
+ *         schema:
+ *           type: integer
+ *         description: Prix maximum
+ *       - in: query
+ *         name: titre
+ *         schema:
+ *           type: string
+ *         description: Recherche dans le titre
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *           enum: [prix, ville]
+ *         description: Tri par champ
+ *       - in: query
+ *         name: order
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *         description: Ordre de tri
+ *     responses:
+ *       200:
+ *         description: Résultat de la recherche
+ */
+router.get("/search", logementPresent,logementCtrl.search);
+
 module.exports = router;
