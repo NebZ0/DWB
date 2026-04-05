@@ -1,22 +1,29 @@
-const { PrismaClient } = require('./generated/prisma'); // chemin vers ton client Prisma
+// test.js
+const { PrismaClient } = require('./generated/prisma');
 const prisma = new PrismaClient();
 
-async function testLogements() {
-  const id = "69cb7aa6e8bc3860628efdd6"; // remplace par un id existant dans ta DB
+async function main() {
+  console.log("=== Tous les utilisateurs ===");
+  const utilisateurs = await prisma.utilisateur.findMany();
+  console.log(utilisateurs);
 
+  const userId = "69cb7aa6e8bc3860628efdd6"; // Mets ici un ID existant dans ta base
+
+  console.log("\n=== Utilisateur sélectionné ===");
   const utilisateur = await prisma.utilisateur.findUnique({
-    where: { id },
-    include: { logements: true } // récupère les logements du propriétaire
+    where: { id: userId }
   });
+  console.log(utilisateur);
 
-  if (!utilisateur) {
-    console.log("Utilisateur introuvable");
-  } else {
-    console.log("Utilisateur :", utilisateur.nom);
-    console.log("Logements :", utilisateur.logements);
-  }
+  console.log("\n=== Logements de l'utilisateur ===");
+  const logements = await prisma.logement.findMany({
+    where: { id_proprio: userId }
+  });
+  console.log(logements);
 }
 
-testLogements()
+main()
   .catch(e => console.error(e))
-  .finally(() => prisma.$disconnect());
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

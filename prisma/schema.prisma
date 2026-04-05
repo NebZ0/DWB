@@ -13,20 +13,8 @@ generator client {
   output   = "../generated/prisma"
 }
 
-model Logement {
-  id String  @id@default(auto()) @map("_id") @db.ObjectId
-  titre String
-  ville String
-  prix Int
-  id_proprio String @db.ObjectId
-
-  proprietaire Utilisateur @relation("ProprietaireLogements", fields: [id_proprio], references: [id])
-
-  reservations Reservation[]
-}
-
 model Utilisateur {
-  id String  @id@default(auto()) @map("_id") @db.ObjectId
+  id String  @id @default(auto()) @map("_id") @db.ObjectId
   nom String
   email String
   role String
@@ -36,14 +24,24 @@ model Utilisateur {
   reservationsClient Reservation[] @relation("ClientReservations")
 }
 
+model Logement {
+  id String  @id @default(auto()) @map("_id") @db.ObjectId
+  id_proprio String @db.ObjectId
+  titre String
+  ville String
+  prix Int
+ 
+  proprietaire Utilisateur @relation("ProprietaireLogements", fields: [id_proprio], references: [id])
+  reservations Reservation[]
+}
+
 model Reservation {
-  id String  @id@default(auto()) @map("_id") @db.ObjectId
-  DateArrive DateTime
-  DateDepart DateTime
+  id String  @id @default(auto()) @map("_id") @db.ObjectId
   id_client String @db.ObjectId
   id_logement String @db.ObjectId
-
-  client Utilisateur @relation("ClientReservations", fields: [id_client], references: [id])
+  DateArrive DateTime
+  DateDepart DateTime
 
   logement Logement @relation(fields: [id_logement], references: [id])
+  client Utilisateur @relation("ClientReservations", fields: [id_client], references: [id])
 }

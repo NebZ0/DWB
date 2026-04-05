@@ -2,8 +2,24 @@ require('dotenv').config();
 
 const express = require("express");
 const app = express();
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
 
 app.use(express.json());
+
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'API Users Demo',
+      version: '1.0.0',
+      description: 'Exemple d’API pour les utilisateurs'
+    },
+  },
+  apis: ['./routes/*.js'],
+};
+const specs = swaggerJsdoc(options);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 const { PrismaClient } = require('./generated/prisma');
 const prisma = new PrismaClient(); 
@@ -27,3 +43,4 @@ const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 }); 
+

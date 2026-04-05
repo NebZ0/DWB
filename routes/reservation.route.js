@@ -2,6 +2,9 @@ const express = require("express");
 const router = express.Router();
 const reservCtrl = require("../controllers/reservation.controller");
 
+const { reservationValidationRules, validate } = require('../middlewares/validateReservation');
+const { reservationPresent, reservationIdPresent } = require('../middlewares/presenceReservation');
+
 /**
  * @swagger
  * tags:
@@ -38,7 +41,7 @@ const reservCtrl = require("../controllers/reservation.controller");
  *                   id_logement:
  *                     type: string
  */
-router.get("/", reservCtrl.getAll);
+router.get("/",reservationPresent ,reservCtrl.getAll);
 
 /**
  * @swagger
@@ -57,7 +60,7 @@ router.get("/", reservCtrl.getAll);
  *       200:
  *         description: Réservation trouvée
  */
-router.get("/:id", reservCtrl.getById);
+router.get("/:id", reservationIdPresent,reservCtrl.getById);
 
 /**
  * @swagger
@@ -86,7 +89,7 @@ router.get("/:id", reservCtrl.getById);
  *       201:
  *         description: Réservation créée avec succès
  */
-router.post("/", reservCtrl.create);
+router.post("/",validate(reservationValidationRules) ,reservCtrl.create);
 
 /**
  * @swagger
@@ -122,7 +125,7 @@ router.post("/", reservCtrl.create);
  *       200:
  *         description: Réservation modifiée
  */
-router.put("/:id", reservCtrl.modify);
+router.put("/:id",reservationIdPresent, validate(reservationValidationRules) ,reservCtrl.modify);
 
 /**
  * @swagger
@@ -141,6 +144,6 @@ router.put("/:id", reservCtrl.modify);
  *       204:
  *         description: Réservation supprimée
  */
-router.delete("/:id", reservCtrl.dele);
+router.delete("/:id", reservationIdPresent,reservCtrl.dele);
 
 module.exports = router;

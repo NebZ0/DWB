@@ -1,4 +1,4 @@
-const { PrismaClient } = require('../generated/prisma')
+const { PrismaClient, Prisma } = require('../generated/prisma')
 const prisma = new PrismaClient()
 
 exports.getAll = async (req, res) => {
@@ -11,15 +11,13 @@ exports.getById = async (req, res) => {
 
 exports.getLogementDeId = async (req, res) => {
     const id = req.params.id;
-
-    const logements = await prisma.logement.findMany({
-        where: { id_proprio : id },
-        select:{
-            titre: true,
-            ville: true,
-            prix: true
+    
+    const logements = await prisma.utilisateur.findUnique({
+        where : { id },
+        include : {
+            logements : true
         }
-    });
+    })
 
     res.json(logements);
 }

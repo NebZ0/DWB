@@ -1,93 +1,37 @@
-const { PrismaClient } = require('../generated/prisma')
-const prisma = new PrismaClient()
+const { PrismaClient } = require('../generated/prisma');
+const prisma = new PrismaClient();
 
 exports.getAll = async (req, res) => {
-  try {
-    const reservations = await prisma.reservation.findMany()
-    res.json(reservations)
-  } catch (err) {
-    res.status(500).json({ error: err.message })
-  }
+    res.json(req.reservations);
 }
 
 exports.getById = async (req, res) => {
-  try {
-    const id = req.params.id
-
-    const reservation = await prisma.reservation.findUnique({
-      where: { id }
-    })
-
-    if (!reservation) {
-      return res.status(404).json({ error: "Réservation inexistante." })
-    }
-
-    res.json(reservation)
-  } catch (err) {
-    res.status(500).json({ error: err.message })
-  }
+    res.json(req.reservation);
 }
 
 exports.create = async (req, res) => {
-  try {
-    const { DateArrive, DateDepart, id_client, id_logement } = req.body
-
-    if (!DateArrive || !DateDepart || !id_client || !id_logement) {
-      return res.status(400).json({ error: "Champs manquants." })
-    }
-
+    const { id_client, id_logement, DateArrive, DateDepart } = req.body;
     const nouvelleReservation = await prisma.reservation.create({
-      data: {
-        DateArrive: new Date(DateArrive),
-        DateDepart: new Date(DateDepart),
-        id_client,
-        id_logement
-      }
-    })
+        data: { id_client, id_logement, DateArrive: new Date(DateArrive), DateDepart: new Date(DateDepart) }
+    });
 
-    res.status(201).json(nouvelleReservation)
-  } catch (err) {
-    res.status(500).json({ error: err.message })
-  }
+    res.status(201).json(nouvelleReservation);
 }
 
 exports.modify = async (req, res) => {
-  try {
-    const id = req.params.id
-    const { DateArrive, DateDepart, id_client, id_logement } = req.body
+    const id = req.params.id;
+    const { id_client, id_logement, DateArrive, DateDepart } = req.body;
 
     const reservation = await prisma.reservation.update({
-      where: { id },
-      data: {
-        ...(DateArrive && { DateArrive: new Date(DateArrive) }),
-        ...(DateDepart && { DateDepart: new Date(DateDepart) }),
-        ...(id_client && { id_client }),
-        ...(id_logement && { id_logement })
-      }
-    })
+        where: { id },
+        data: { id_client, id_logement, DateArrive: new Date(DateArrive), DateDepart: new Date(DateDepart) }
+    });
 
-    res.json(reservation)
-  } catch (err) {
-    if (err.code === 'P2025') {
-      return res.status(404).json({ error: "Réservation non trouvée" })
-    }
-    res.status(500).json({ error: err.message })
-  }
+    res.json(reservation);
 }
 
 exports.dele = async (req, res) => {
-  try {
-    const id = req.params.id
-
-    await prisma.reservation.delete({
-      where: { id }
-    })
-
-    res.status(204).send()
-  } catch (err) {
-    if (err.code === 'P2025') {
-      return res.status(404).json({ error: "Réservation non trouvée" })
-    }
-    res.status(500).json({ error: err.message })
-  }
+    const id = req.params.id;
+    await prisma.reservation.delete({ where: { id } });
+    res.status(204).send();
 }
